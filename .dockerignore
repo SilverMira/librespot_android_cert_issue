@@ -1,0 +1,9 @@
+.git/
+.idea/
+.dart_tool/
+build/
+target/
+.flutter-plugins
+.flutter-plugins-dependencies
+.gitignore
+frb_base.iml
