@@ -9,3 +9,4 @@ target/
 frb_base.iml
 Dockerfile
 *.Dockerfile
+justfile

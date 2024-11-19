@@ -1,7 +1,8 @@
 # LINUX
 ARG BUILD_BASE_TAG
 FROM $BUILD_BASE_TAG AS flutter-linux-install
-RUN apt-get -y install \
+RUN apt-get update
+RUN apt-get install -y \
       clang cmake git \
       ninja-build pkg-config \
       libgtk-3-dev liblzma-dev \
