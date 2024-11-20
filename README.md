@@ -1,16 +1,23 @@
-# frb_base
+# librespot_android_cert_issue
 
-A new Flutter project.
+## Reproduction steps on Android
 
-## Getting Started
+1. Try using `flutter run` with an android emulator connected, if that doesn't
+work, continue with steps below to use docker to build the app.
+2. This repo uses `just` to run commands,
+`just --set BUILD_CONFIGURATION debug --set ANDROID_ARCH android-arm,android-arm64,android-x64 build-android`
+will build the app in docker and output the APK files in `./build/docker/android/`.
+3. Use `adb install` to install the APK on the device.
+4. Launch the app and `just log-android` will display logcat entries
+only for the app.
+5. Within the app, enter the access token and track ID, click `Create` and
+a librespot player will be spawned to play the track.
+6. Observe the logs
 
-This project is a starting point for a Flutter application.
+## Other platforms
 
-A few resources to get you started if this is your first Flutter project:
+The app does build for other platforms, and does work as expected on Windows/Linux.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. `just build-linux` will build the app executable in Docker and place the
+bundle in `./build/docker/linux`
+2. Run the binary with `RUST_LOG=trace ./frb_base`
