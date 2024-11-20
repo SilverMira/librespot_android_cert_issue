@@ -10,3 +10,4 @@ frb_base.iml
 Dockerfile
 *.Dockerfile
 justfile
+rust/target/**/*

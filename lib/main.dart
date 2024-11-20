@@ -7,8 +7,31 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final TextEditingController accessToken;
+  late final TextEditingController trackId;
+  LibrespotPlayer? player;
+
+  @override
+  void initState() {
+    super.initState();
+    accessToken = TextEditingController();
+    trackId = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    accessToken.dispose();
+    trackId.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +39,46 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(title: const Text('flutter_rust_bridge quickstart')),
         body: Center(
-          child: Text(
-              'Action: Call Rust `greet("Tom")`\nResult: `${greet(name: "Tom")}`'),
+          child: Column(children: [
+            TextField(
+              controller: accessToken,
+              decoration: const InputDecoration(labelText: 'Access token'),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: trackId,
+              decoration: const InputDecoration(labelText: 'Track ID'),
+            ),
+            if (player == null) ...[
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () async {
+                  final player = await LibrespotPlayer.newInstance(
+                    accessToken: accessToken.text,
+                    trackId: trackId.text,
+                  );
+
+                  setState(() => this.player = player);
+                },
+                child: const Text('Create'),
+              ),
+            ] else ...[
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () {
+                  player!.play();
+                },
+                child: const Text('Play'),
+              ),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () {
+                  player!.pause();
+                },
+                child: const Text('Pause'),
+              ),
+            ],
+          ]),
         ),
       ),
     );

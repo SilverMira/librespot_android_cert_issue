@@ -8,3 +8,16 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 String greet({required String name}) =>
     RustLib.instance.api.crateApiSimpleGreet(name: name);
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<LibrespotPlayer>>
+abstract class LibrespotPlayer implements RustOpaqueInterface {
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<LibrespotPlayer> newInstance(
+          {required String accessToken, required String trackId}) =>
+      RustLib.instance.api.crateApiSimpleLibrespotPlayerNew(
+          accessToken: accessToken, trackId: trackId);
+
+  Future<void> pause();
+
+  Future<void> play();
+}
