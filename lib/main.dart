@@ -18,6 +18,7 @@ class _MyAppState extends State<MyApp> {
   late final TextEditingController accessToken;
   late final TextEditingController trackId;
   LibrespotPlayer? player;
+  bool isInitializing = false;
 
   @override
   void initState() {
@@ -51,17 +52,42 @@ class _MyAppState extends State<MyApp> {
             ),
             if (player == null) ...[
               const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () async {
-                  final player = await LibrespotPlayer.newInstance(
-                    accessToken: accessToken.text,
-                    trackId: trackId.text,
-                  );
+              Builder(builder: (context) {
+                return ElevatedButton(
+                  onPressed: isInitializing
+                      ? null
+                      : () async {
+                          try {
+                            setState(() => isInitializing = true);
+                            final player = await LibrespotPlayer.newInstance(
+                              accessToken: accessToken.text,
+                              trackId: trackId.text,
+                            );
 
-                  setState(() => this.player = player);
-                },
-                child: const Text('Create'),
-              ),
+                            setState(() => this.player = player);
+                          } catch (error, stack) {
+                            if (!context.mounted) rethrow;
+
+                            await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Error'),
+                                  content: SingleChildScrollView(
+                                    child: SelectableText(
+                                      "Error: $error\n\nStack: $stack",
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          } finally {
+                            setState(() => isInitializing = false);
+                          }
+                        },
+                  child: const Text('Create'),
+                );
+              }),
             ] else ...[
               const SizedBox(height: 8),
               ElevatedButton(
