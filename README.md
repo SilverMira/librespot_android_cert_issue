@@ -18,6 +18,6 @@ a librespot player will be spawned to play the track.
 
 The app does build for other platforms, and does work as expected on Windows/Linux.
 
-1. `just build-linux` will build the app executable in Docker and place the
+1. `just --set BUILD_CONFIGURATION debug build-linux` will build the app executable in Docker and place the
 bundle in `./build/docker/linux`
 2. Run the binary with `RUST_LOG=trace ./frb_base`
