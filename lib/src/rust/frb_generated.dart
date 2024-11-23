@@ -68,7 +68,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.6.0';
 
   @override
-  int get rustContentHash => -1060610359;
+  int get rustContentHash => -102881297;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -82,11 +82,32 @@ abstract class RustLibApi extends BaseApi {
   Future<LibrespotPlayer> crateApiSimpleLibrespotPlayerNew(
       {required String accessToken, required String trackId});
 
-  Future<void> crateApiSimpleLibrespotPlayerPause(
-      {required LibrespotPlayer that});
+  void crateApiSimpleLibrespotPlayerPause({required LibrespotPlayer that});
 
-  Future<void> crateApiSimpleLibrespotPlayerPlay(
-      {required LibrespotPlayer that});
+  void crateApiSimpleLibrespotPlayerPlay({required LibrespotPlayer that});
+
+  Future<String?> crateApiSimplePkceOAuthSessionAccessToken(
+      {required PkceOAuthSession that});
+
+  OAuthAuthorizeUrl crateApiSimplePkceOAuthSessionAuthUrl(
+      {required PkceOAuthSession that});
+
+  Future<void> crateApiSimplePkceOAuthSessionCallback(
+      {required PkceOAuthSession that, required String code});
+
+  String crateApiSimplePkceOAuthSessionClientIdRedirectUri(
+      {required String clientId});
+
+  PkceOAuthSession crateApiSimplePkceOAuthSessionFromTokenJson(
+      {required String token});
+
+  PkceOAuthSession crateApiSimplePkceOAuthSessionNew();
+
+  Future<String?> crateApiSimplePkceOAuthSessionRefreshToken(
+      {required PkceOAuthSession that});
+
+  Future<String?> crateApiSimplePkceOAuthSessionTokenJson(
+      {required PkceOAuthSession that});
 
   String crateApiSimpleGreet({required String name});
 
@@ -100,6 +121,15 @@ abstract class RustLibApi extends BaseApi {
 
   CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_LibrespotPlayerPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_PkceOAuthSession;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_PkceOAuthSession;
+
+  CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_PkceOAuthSessionPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -139,15 +169,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiSimpleLibrespotPlayerPause(
-      {required LibrespotPlayer that}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
+  void crateApiSimpleLibrespotPlayerPause({required LibrespotPlayer that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLibrespotPlayer(
             that, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -166,15 +194,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiSimpleLibrespotPlayerPlay(
-      {required LibrespotPlayer that}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
+  void crateApiSimpleLibrespotPlayerPlay({required LibrespotPlayer that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLibrespotPlayer(
             that, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 3, port: port_);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -193,12 +219,223 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<String?> crateApiSimplePkceOAuthSessionAccessToken(
+      {required PkceOAuthSession that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 4, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_opt_String,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePkceOAuthSessionAccessTokenConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePkceOAuthSessionAccessTokenConstMeta =>
+      const TaskConstMeta(
+        debugName: "PkceOAuthSession_access_token",
+        argNames: ["that"],
+      );
+
+  @override
+  OAuthAuthorizeUrl crateApiSimplePkceOAuthSessionAuthUrl(
+      {required PkceOAuthSession that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+            that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_o_auth_authorize_url,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePkceOAuthSessionAuthUrlConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePkceOAuthSessionAuthUrlConstMeta =>
+      const TaskConstMeta(
+        debugName: "PkceOAuthSession_auth_url",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<void> crateApiSimplePkceOAuthSessionCallback(
+      {required PkceOAuthSession that, required String code}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+            that, serializer);
+        sse_encode_String(code, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePkceOAuthSessionCallbackConstMeta,
+      argValues: [that, code],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePkceOAuthSessionCallbackConstMeta =>
+      const TaskConstMeta(
+        debugName: "PkceOAuthSession_callback",
+        argNames: ["that", "code"],
+      );
+
+  @override
+  String crateApiSimplePkceOAuthSessionClientIdRedirectUri(
+      {required String clientId}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(clientId, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSimplePkceOAuthSessionClientIdRedirectUriConstMeta,
+      argValues: [clientId],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta
+      get kCrateApiSimplePkceOAuthSessionClientIdRedirectUriConstMeta =>
+          const TaskConstMeta(
+            debugName: "PkceOAuthSession_client_id_redirect_uri",
+            argNames: ["clientId"],
+          );
+
+  @override
+  PkceOAuthSession crateApiSimplePkceOAuthSessionFromTokenJson(
+      {required String token}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(token, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePkceOAuthSessionFromTokenJsonConstMeta,
+      argValues: [token],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePkceOAuthSessionFromTokenJsonConstMeta =>
+      const TaskConstMeta(
+        debugName: "PkceOAuthSession_from_token_json",
+        argNames: ["token"],
+      );
+
+  @override
+  PkceOAuthSession crateApiSimplePkceOAuthSessionNew() {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateApiSimplePkceOAuthSessionNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePkceOAuthSessionNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "PkceOAuthSession_new",
+        argNames: [],
+      );
+
+  @override
+  Future<String?> crateApiSimplePkceOAuthSessionRefreshToken(
+      {required PkceOAuthSession that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 10, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_opt_String,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePkceOAuthSessionRefreshTokenConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePkceOAuthSessionRefreshTokenConstMeta =>
+      const TaskConstMeta(
+        debugName: "PkceOAuthSession_refresh_token",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<String?> crateApiSimplePkceOAuthSessionTokenJson(
+      {required PkceOAuthSession that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 11, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_opt_String,
+        decodeErrorData: sse_decode_AnyhowException,
+      ),
+      constMeta: kCrateApiSimplePkceOAuthSessionTokenJsonConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateApiSimplePkceOAuthSessionTokenJsonConstMeta =>
+      const TaskConstMeta(
+        debugName: "PkceOAuthSession_token_json",
+        argNames: ["that"],
+      );
+
+  @override
   String crateApiSimpleGreet({required String name}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(name, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -221,7 +458,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
+            funcId: 13, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_unit,
@@ -246,6 +483,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       get rust_arc_decrement_strong_count_LibrespotPlayer => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLibrespotPlayer;
 
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_PkceOAuthSession => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_PkceOAuthSession => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession;
+
   @protected
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
@@ -261,6 +506,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PkceOAuthSession
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PkceOAuthSessionImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  PkceOAuthSession
+      dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PkceOAuthSessionImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   LibrespotPlayer
       dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLibrespotPlayer(
           dynamic raw) {
@@ -269,11 +530,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PkceOAuthSession
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PkceOAuthSessionImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   LibrespotPlayer
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLibrespotPlayer(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return LibrespotPlayerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  PkceOAuthSession
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return PkceOAuthSessionImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -286,6 +563,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  OAuthAuthorizeUrl dco_decode_o_auth_authorize_url(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return OAuthAuthorizeUrl(
+      authUrl: dco_decode_String(arr[0]),
+      redirectUrl: dco_decode_String(arr[1]),
+    );
+  }
+
+  @protected
+  String? dco_decode_opt_String(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_String(raw);
   }
 
   @protected
@@ -323,6 +618,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PkceOAuthSession
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return PkceOAuthSessionImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  PkceOAuthSession
+      sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return PkceOAuthSessionImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   LibrespotPlayer
       sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLibrespotPlayer(
           SseDeserializer deserializer) {
@@ -332,11 +645,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  PkceOAuthSession
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return PkceOAuthSessionImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   LibrespotPlayer
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLibrespotPlayer(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return LibrespotPlayerImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  PkceOAuthSession
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return PkceOAuthSessionImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -352,6 +683,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  OAuthAuthorizeUrl sse_decode_o_auth_authorize_url(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_authUrl = sse_decode_String(deserializer);
+    var var_redirectUrl = sse_decode_String(deserializer);
+    return OAuthAuthorizeUrl(
+        authUrl: var_authUrl, redirectUrl: var_redirectUrl);
+  }
+
+  @protected
+  String? sse_decode_opt_String(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_String(deserializer));
+    } else {
+      return null;
+    }
   }
 
   @protected
@@ -402,6 +754,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+          PkceOAuthSession self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as PkceOAuthSessionImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+          PkceOAuthSession self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as PkceOAuthSessionImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
       sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLibrespotPlayer(
           LibrespotPlayer self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
@@ -412,11 +784,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+          PkceOAuthSession self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as PkceOAuthSessionImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerLibrespotPlayer(
           LibrespotPlayer self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as LibrespotPlayerImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPkceOAuthSession(
+          PkceOAuthSession self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as PkceOAuthSessionImpl).frbInternalSseEncode(move: null),
         serializer);
   }
 
@@ -432,6 +824,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_o_auth_authorize_url(
+      OAuthAuthorizeUrl self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.authUrl, serializer);
+    sse_encode_String(self.redirectUrl, serializer);
+  }
+
+  @protected
+  void sse_encode_opt_String(String? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_String(self, serializer);
+    }
   }
 
   @protected
@@ -483,12 +893,55 @@ class LibrespotPlayerImpl extends RustOpaque implements LibrespotPlayer {
         RustLib.instance.api.rust_arc_decrement_strong_count_LibrespotPlayerPtr,
   );
 
-  Future<void> pause() =>
-      RustLib.instance.api.crateApiSimpleLibrespotPlayerPause(
+  void pause() => RustLib.instance.api.crateApiSimpleLibrespotPlayerPause(
         that: this,
       );
 
-  Future<void> play() => RustLib.instance.api.crateApiSimpleLibrespotPlayerPlay(
+  void play() => RustLib.instance.api.crateApiSimpleLibrespotPlayerPlay(
+        that: this,
+      );
+}
+
+@sealed
+class PkceOAuthSessionImpl extends RustOpaque implements PkceOAuthSession {
+  // Not to be used by end users
+  PkceOAuthSessionImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  PkceOAuthSessionImpl.frbInternalSseDecode(
+      BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_PkceOAuthSession,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_PkceOAuthSession,
+    rustArcDecrementStrongCountPtr: RustLib
+        .instance.api.rust_arc_decrement_strong_count_PkceOAuthSessionPtr,
+  );
+
+  Future<String?> accessToken() =>
+      RustLib.instance.api.crateApiSimplePkceOAuthSessionAccessToken(
+        that: this,
+      );
+
+  OAuthAuthorizeUrl authUrl() =>
+      RustLib.instance.api.crateApiSimplePkceOAuthSessionAuthUrl(
+        that: this,
+      );
+
+  Future<void> callback({required String code}) => RustLib.instance.api
+      .crateApiSimplePkceOAuthSessionCallback(that: this, code: code);
+
+  Future<String?> refreshToken() =>
+      RustLib.instance.api.crateApiSimplePkceOAuthSessionRefreshToken(
+        that: this,
+      );
+
+  Future<String?> tokenJson() =>
+      RustLib.instance.api.crateApiSimplePkceOAuthSessionTokenJson(
         that: this,
       );
 }

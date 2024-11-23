@@ -6,6 +6,8 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These functions are ignored because they are not marked as `pub`: `credentials`, `oauth`, `token`
+
 String greet({required String name}) =>
     RustLib.instance.api.crateApiSimpleGreet(name: name);
 
@@ -17,7 +19,52 @@ abstract class LibrespotPlayer implements RustOpaqueInterface {
       RustLib.instance.api.crateApiSimpleLibrespotPlayerNew(
           accessToken: accessToken, trackId: trackId);
 
-  Future<void> pause();
+  void pause();
 
-  Future<void> play();
+  void play();
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PkceOAuthSession>>
+abstract class PkceOAuthSession implements RustOpaqueInterface {
+  Future<String?> accessToken();
+
+  OAuthAuthorizeUrl authUrl();
+
+  Future<void> callback({required String code});
+
+  static String clientIdRedirectUri({required String clientId}) => RustLib
+      .instance.api
+      .crateApiSimplePkceOAuthSessionClientIdRedirectUri(clientId: clientId);
+
+  static PkceOAuthSession fromTokenJson({required String token}) =>
+      RustLib.instance.api
+          .crateApiSimplePkceOAuthSessionFromTokenJson(token: token);
+
+  factory PkceOAuthSession() =>
+      RustLib.instance.api.crateApiSimplePkceOAuthSessionNew();
+
+  Future<String?> refreshToken();
+
+  Future<String?> tokenJson();
+}
+
+class OAuthAuthorizeUrl {
+  final String authUrl;
+  final String redirectUrl;
+
+  const OAuthAuthorizeUrl({
+    required this.authUrl,
+    required this.redirectUrl,
+  });
+
+  @override
+  int get hashCode => authUrl.hashCode ^ redirectUrl.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is OAuthAuthorizeUrl &&
+          runtimeType == other.runtimeType &&
+          authUrl == other.authUrl &&
+          redirectUrl == other.redirectUrl;
 }
