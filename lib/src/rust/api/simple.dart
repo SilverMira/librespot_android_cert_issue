@@ -6,7 +6,7 @@
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These functions are ignored because they are not marked as `pub`: `credentials`, `oauth`, `token`
+// These functions are ignored because they are not marked as `pub`: `credentials`, `from_session`, `oauth`, `token`
 
 String greet({required String name}) =>
     RustLib.instance.api.crateApiSimpleGreet(name: name);
@@ -18,6 +18,13 @@ abstract class LibrespotPlayer implements RustOpaqueInterface {
           {required String accessToken, required String trackId}) =>
       RustLib.instance.api.crateApiSimpleLibrespotPlayerNew(
           accessToken: accessToken, trackId: trackId);
+
+  static Future<LibrespotPlayer> newWithLogin5(
+          {required String id,
+          required String password,
+          required String trackId}) =>
+      RustLib.instance.api.crateApiSimpleLibrespotPlayerNewWithLogin5(
+          id: id, password: password, trackId: trackId);
 
   void pause();
 

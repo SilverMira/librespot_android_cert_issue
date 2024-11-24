@@ -8,7 +8,11 @@ crate-type = ["cdylib", "staticlib"]
 
 [dependencies]
 flutter_rust_bridge = { version = "=2.6.0" }
-librespot = { path = "../../librespot-certs/" }
+librespot = { git = "https://github.com/SilverMira/librespot.git", branch = "test-android", default-features = false, features = [
+  "rodio-backend",
+  "with-libmdns",
+  "rustls-webpki-roots",
+] }
 anyhow = "1.0.93"
 log = "0.4.22"
 env_logger = "0.11.5"

@@ -11,6 +11,7 @@ use librespot::{
         mixer::NoOpVolume,
         player::Player,
     },
+    protocol::authentication::AuthenticationType,
 };
 use rspotify::{
     prelude::{BaseClient as _, OAuthClient},
@@ -27,26 +28,58 @@ pub struct LibrespotPlayer {
     player: Arc<Player>,
 }
 
+pub(crate) const KEYMASTER_CLIENT_ID: &str = "65b708073fc0480ea92a077233ca87bd";
+pub(crate) const ANDROID_CLIENT_ID: &str = "9a8d2f0ce77a4e248bb71fefcb557637";
+pub(crate) const IOS_CLIENT_ID: &str = "58bd3c95768941ea9eb4350aaa033eb3";
+
 impl LibrespotPlayer {
-    pub async fn new(access_token: String, track_id: String) -> anyhow::Result<LibrespotPlayer> {
+    pub async fn new_with_login5(
+        id: String,
+        password: String,
+        track_id: String,
+    ) -> anyhow::Result<LibrespotPlayer> {
         let session_config = SessionConfig::default();
+
+        let session = Session::new(session_config, None);
+        log::trace!("Authing with login5");
+        let (token, auth_data) = match session.login5().login(id.clone(), password).await {
+            Ok(result) => result,
+            Err(err) => {
+                log::error!("Error while login5 auth: {err:?}");
+                Err(err)?
+            }
+        };
+
+        log::trace!("Login5 success: token={token:?} auth_data={auth_data:?}");
+        let credentials = Credentials {
+            username: Some(id),
+            auth_type: AuthenticationType::AUTHENTICATION_STORED_SPOTIFY_CREDENTIALS,
+            auth_data,
+        };
+        // let credentials = Credentials::with_access_token(token.access_token);
+        if let Err(err) = session.connect(credentials, false).await {
+            log::error!("Error connecting to librespot: {err:?}");
+            Err(err)?;
+        };
+
+        Self::from_session(session, track_id).await
+    }
+
+    async fn from_session(session: Session, track_id: String) -> anyhow::Result<LibrespotPlayer> {
         let player_config = PlayerConfig::default();
         let audio_format = AudioFormat::default();
-
-        let credentials = Credentials::with_access_token(access_token);
 
         let mut track = SpotifyId::from_base62(&track_id)?;
         track.item_type = SpotifyItemType::Track;
 
-        let session = Session::new(session_config, None);
-        log::trace!("Connecting to librespot");
-        if let Err(err) = session.connect(credentials, false).await {
-            log::error!("Error connecting to librespot: {err:?}");
-            Err(err)?;
-        }
-
         log::trace!("Try getting audio item");
-        let audio_item = AudioItem::get_file(&session, track).await?;
+        let audio_item = match AudioItem::get_file(&session, track).await {
+            Ok(item) => item,
+            Err(err) => {
+                log::error!("Error getting audio item: {err:?}");
+                Err(err)?
+            }
+        };
 
         let mut audio_files = audio_item.files.iter();
         let audio_stream = loop {
@@ -93,6 +126,24 @@ impl LibrespotPlayer {
         Ok(LibrespotPlayer { player })
     }
 
+    pub async fn new(access_token: String, track_id: String) -> anyhow::Result<LibrespotPlayer> {
+        let session_config = SessionConfig {
+            client_id: KEYMASTER_CLIENT_ID.to_owned(),
+            ..Default::default()
+        };
+
+        let credentials = Credentials::with_access_token(access_token);
+
+        let session = Session::new(session_config, None);
+        log::trace!("Connecting to librespot");
+        if let Err(err) = session.connect(credentials, false).await {
+            log::error!("Error connecting to librespot: {err:?}");
+            Err(err)?;
+        }
+
+        Self::from_session(session, track_id).await
+    }
+
     #[flutter_rust_bridge::frb(sync)]
     pub fn play(&self) {
         self.player.play();
@@ -116,14 +167,45 @@ pub struct OAuthAuthorizeUrl {
 
 impl PkceOAuthSession {
     fn credentials() -> rspotify::Credentials {
-        let session_config = SessionConfig::default();
+        let session_config = SessionConfig {
+            client_id: KEYMASTER_CLIENT_ID.to_owned(),
+            ..Default::default()
+        };
         rspotify::Credentials::new_pkce(&session_config.client_id)
     }
 
     fn oauth(client_id: &str) -> rspotify::OAuth {
+        let scopes = rspotify::scopes!(
+            "streaming" // "app-remote-control",
+                        // "playlist-modify",
+                        // "playlist-modify-private",
+                        // "playlist-modify-public",
+                        // "playlist-read",
+                        // "playlist-read-collaborative",
+                        // "playlist-read-private",
+                        // "ugc-image-upload",
+                        // "user-follow-modify",
+                        // "user-follow-read",
+                        // "user-library-modify",
+                        // "user-library-read",
+                        // "user-modify",
+                        // "user-modify-playback-state",
+                        // "user-modify-private",
+                        // "user-personalized",
+                        // "user-read-birthdate",
+                        // "user-read-currently-playing",
+                        // "user-read-email",
+                        // "user-read-play-history",
+                        // "user-read-playback-position",
+                        // "user-read-playback-state",
+                        // "user-read-private",
+                        // "user-read-recently-played",
+                        // "user-top-read"
+        );
+
         rspotify::OAuth {
             redirect_uri: Self::client_id_redirect_uri(client_id),
-            scopes: rspotify::scopes!("streaming"),
+            scopes,
             ..Default::default()
         }
     }
@@ -162,9 +244,6 @@ impl PkceOAuthSession {
 
     #[flutter_rust_bridge::frb(sync)]
     pub fn client_id_redirect_uri(client_id: &str) -> String {
-        const KEYMASTER_CLIENT_ID: &str = "65b708073fc0480ea92a077233ca87bd";
-        const ANDROID_CLIENT_ID: &str = "9a8d2f0ce77a4e248bb71fefcb557637";
-        const IOS_CLIENT_ID: &str = "58bd3c95768941ea9eb4350aaa033eb3";
         match client_id {
             ANDROID_CLIENT_ID => "https://auth-callback.spotify.com/r/android/music/login",
             // ANDROID_CLIENT_ID => "spotify-auth-music://callback/r/android/music/login",
